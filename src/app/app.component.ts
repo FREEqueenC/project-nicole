@@ -317,7 +317,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // 2. THE RITUAL: Gnostic JEU Protocol
   // 2. THE RITUAL: Gnostic JEU Protocol (Drone Mode)
   async manifestWordOfPower() {
     // Toggle Logic
@@ -326,28 +325,45 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    if (!this.audioCtx) {
-      this.audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    try {
+      // Create AudioContext if needed
+      if (!this.audioCtx) {
+        this.audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        console.log('AudioContext created, state:', this.audioCtx.state);
+      }
+
+      // CRITICAL: Explicitly resume AudioContext (required for deployed sites)
+      if (this.audioCtx.state === 'suspended') {
+        console.log('Resuming suspended AudioContext...');
+        await this.audioCtx.resume();
+        console.log('AudioContext resumed, state:', this.audioCtx.state);
+      }
+
+      // Verify AudioContext is running
+      if (this.audioCtx.state !== 'running') {
+        throw new Error(`AudioContext failed to start. State: ${this.audioCtx.state}`);
+      }
+
+      this.isPlaying = true;
+
+      // Initialize the Watcher (Analyser) - HARD LINK
+      if (!this.analyser) {
+        this.analyser = this.audioCtx.createAnalyser();
+        this.analyser.fftSize = 256;
+        this.analyser.smoothingTimeConstant = 0.7; // Smoother for drone
+        this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+      }
+
+      // Connect Output
+      this.analyser.connect(this.audioCtx.destination);
+
+      this.startDroneProtocol();
+      console.log('Audio protocol initiated successfully');
+    } catch (error) {
+      console.error('Failed to initialize audio:', error);
+      this.isPlaying = false;
+      alert('Audio failed to start. Please try clicking the button again. Error: ' + (error as Error).message);
     }
-
-    if (this.audioCtx.state === 'suspended') {
-      await this.audioCtx.resume();
-    }
-
-    this.isPlaying = true;
-
-    // Initialize the Watcher (Analyser) - HARD LINK
-    if (!this.analyser) {
-      this.analyser = this.audioCtx.createAnalyser();
-      this.analyser.fftSize = 256;
-      this.analyser.smoothingTimeConstant = 0.7; // Smoother for drone
-      this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-    }
-
-    // Connect Output
-    this.analyser.connect(this.audioCtx.destination);
-
-    this.startDroneProtocol();
   }
 
   stopAudio() {
