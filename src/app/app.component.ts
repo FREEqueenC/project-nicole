@@ -317,6 +317,24 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  // Mobile Audio Unlock: Create dummy sound to satisfy iOS/mobile autoplay policies
+  private unlockMobileAudio() {
+    if (!this.audioCtx) return;
+
+    console.log('Unlocking mobile audio...');
+    // Create and immediately destroy a silent sound
+    const oscillator = this.audioCtx.createOscillator();
+    const gainNode = this.audioCtx.createGain();
+    gainNode.gain.value = 0.001; // Nearly silent
+
+    oscillator.connect(gainNode);
+    gainNode.connect(this.audioCtx.destination);
+
+    oscillator.start(this.audioCtx.currentTime);
+    oscillator.stop(this.audioCtx.currentTime + 0.01);
+    console.log('Mobile audio unlocked');
+  }
+
   // 2. THE RITUAL: Gnostic JEU Protocol (Drone Mode)
   async manifestWordOfPower() {
     // Toggle Logic
@@ -338,6 +356,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         await this.audioCtx.resume();
         console.log('AudioContext resumed, state:', this.audioCtx.state);
       }
+
+      // MOBILE FIX: Unlock audio on mobile browsers (iOS Safari requirement)
+      this.unlockMobileAudio();
 
       // Verify AudioContext is running
       if (this.audioCtx.state !== 'running') {
