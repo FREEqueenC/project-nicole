@@ -195,7 +195,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   // -- AUDIO ENGINE --
   private audioCtx: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
-  private panner: StereoPannerNode | null = null; // SPATIALIZER
   private dataArray: Uint8Array | null = null;
   private loopTimer: any = null;
   private isPlaying = false;
@@ -407,17 +406,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // A. Create the Continuous Wave (CW) Carrier
     const oscillator = this.audioCtx.createOscillator();
     const dynamisNode = this.audioCtx.createGain();
-    this.panner = this.audioCtx.createStereoPanner(); // VORTEX NODE
 
     oscillator.type = 'sine'; // Pure tone carrier
 
     // Base Tone Calculation
     const baseTone = 220 + (this.frequency * 50);
 
-    // Wiring: Osc -> Dynamis -> Panner -> Analyser -> Out
+    // Wiring: Osc -> Dynamis -> Analyser -> Out (StereoPanner removed for iPhone compatibility)
     oscillator.connect(dynamisNode);
-    dynamisNode.connect(this.panner);
-    this.panner.connect(this.analyser);
+    dynamisNode.connect(this.analyser);
 
     // B. Start the Infinite Wave
     const now = this.audioCtx.currentTime;
@@ -533,12 +530,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       const avg = sum / this.dataArray.length;
       // Normalize and Boost
       this.gateIntensity = Math.min((avg / 40) * 1.5, 1);
-
-      // -- VORTEX UPDATE --
-      if (this.panner && this.audioCtx) {
-        // Cycle Pan from -1 (Left) to 1 (Right) based on Rotation
-        this.panner.pan.setValueAtTime(Math.sin(this.rotation), this.audioCtx.currentTime);
-      }
 
     } else {
       this.gateIntensity *= 0.95; // Decay
