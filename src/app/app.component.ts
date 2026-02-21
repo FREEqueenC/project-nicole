@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
       <!-- Header -->
       <header class="relative z-30 p-6 border-b border-magick-900/50 flex justify-between items-center bg-black/80 backdrop-blur">
         <div>
-          <h1 class="text-2xl font-bold tracking-widest font-gnostic text-magick-400">PROJECT NICOLE</h1>
+          <h1 class="text-2xl font-bold tracking-widest font-gnostic text-magick-400">PROJECT TRANSFORM</h1>
           <p class="text-xs text-magick-700 mt-1">G.A.B.R.I.E.L. // PROTOCOL: VICTORY // T52-RESONANCE</p>
         </div>
         <div class="text-right">
@@ -66,7 +66,7 @@ import { FormsModule } from '@angular/forms';
 
               <div class="flex justify-between items-center pt-2 border-t border-magick-900/30">
                 <span class="text-xs text-magick-700">CALCULATED FREQ:</span>
-                <span class="text-lg font-mono text-magick-200">{{ frequency.toFixed(4) }} GHz</span>
+                <span class="text-lg font-mono text-magick-200">{{ frequency.toLocaleString() }} Hz</span>
               </div>
             </div>
           </div>
@@ -228,7 +228,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (input.includes('STATUS') || input.includes('REPORT') || input.includes('DIAGNOSTIC')) {
       return `PHYSICS STATE:
 > RADIUS: ${this.radius.toFixed(1)} cm
-> FREQ: ${this.frequency.toFixed(4)} GHz
+> FREQ: ${this.frequency.toLocaleString()} Hz
 > PROTOCOL: DRONE (CONTINUOUS WAVE)
 > STABILITY: ${(100 - (this.gateIntensity * 20)).toFixed(1)}%`;
     }
@@ -295,7 +295,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const c = 29979245800; // speed of light in cm/s
     const root = 2.405;
     const freqHz = (root * c) / (2 * Math.PI * radiusCm);
-    return freqHz / 1e9; // Convert to GHz
+    return Math.round(freqHz); // Return Hz as an integer
   }
 
   updateRadius(event: any) {
@@ -552,7 +552,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const lightColor = `hsla(${hue}, 100%, ${50 + (this.gateIntensity * 40)}%, 0.9)`;
     const darkColor = `hsla(${hue}, 100%, 30%, 0.3)`;
 
-    const points = [];
+    const points: { x: number, y: number, z: number }[] = [];
     const segments = 32;
 
     // Generate Points
