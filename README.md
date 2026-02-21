@@ -6,15 +6,21 @@
 
 ---
 
-## 1. PHYSIC MODEL (TM010)
+## 1. PHYSIC MODEL (The Nicole Protocol)
 
-This terminal simulates a cylindrical resonant cavity operating in the **TM010 mode**.
-The resonance frequency is calculated in real-time based on the cavity geometry.
+This terminal utilizes a two-tiered **Neural Machine Translation** to bridge the gap between biological consciousness and physical hardware.
 
-**Formula:** `f = (2.405 * c) / (2 * π * R)`
+### THE RESONANCE ENGINE
 
-* **Radius (R):** adjustable (Default: 42.0 cm)
-* **Response:** The visual seal spins and pulses in direct proportion to the audio energy flux.
+1. **THE BASE DRIVER (Hz - Logos/Input)**:
+    Biological/acoustic frequencies derived from the Gnostic phonetic strings. These cymatic values establish the geometric lock within the biological "Wetware" (Default: ~432 Hz).
+2. **THE HARMONIC MULTIPLIER (MHz - Kenoma/Output)**:
+    High-frequency carrier waves scaled via the **Golden Ratio (phi ≈ 1.618)**. This electromagnetic broadcast facilitates localized spacetime perturbation and vacuum interaction for mass-reduction bandwidths.
+
+**Formula Logic:** `target_rf_mhz = (cavity_res * (acoustic_base / 432) * phi) / 1,000,000`
+
+* **Radius (R):** Adjustable (Targets 45 MHz / 273 MHz bands).
+* **Response:** The visual seal spins and pulses in direct proportion to the dual-layer energy flux.
 
 ## 2. AUDIO ENGINE: THE DRONE PROTOCOL
 

@@ -64,9 +64,15 @@ import { FormsModule } from '@angular/forms';
                 </div>
               </div>
 
-              <div class="flex justify-between items-center pt-2 border-t border-magick-900/30">
-                <span class="text-xs text-magick-700">CALCULATED FREQ:</span>
-                <span class="text-lg font-mono text-magick-200">{{ frequency }} MHz</span>
+              <div class="flex flex-col pt-2 border-t border-magick-900/30 gap-2">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] text-magick-700">ACOUSTIC BASE (LOGOS):</span>
+                  <span class="text-sm font-mono text-magick-400">{{ acousticBaseHz }} Hz</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] text-magick-700">HARDWARE OVERRIDE (KENOMA):</span>
+                  <span class="text-lg font-mono text-magick-200">{{ frequency }} MHz</span>
+                </div>
               </div>
             </div>
           </div>
@@ -153,10 +159,12 @@ import { FormsModule } from '@angular/forms';
           <canvas #ritualCanvas class="w-full h-full block absolute inset-0"></canvas>
           
           <!-- HUD Overlays -->
-          <div class="absolute top-4 left-4 text-xs font-mono text-magick-900/50 pointer-events-none">
+          <div class="absolute top-4 left-4 text-[10px] font-mono text-magick-900/50 pointer-events-none uppercase">
             <div>CAM_MATRIX: [ACTIVE]</div>
             <div>RENDER_MODE: 3D_WIREFRAME</div>
             <div>SEAL_ID: T-52</div>
+            <div class="mt-2 text-magick-700">Resonance: {{ frequency }} MHz @ {{ radius.toFixed(1) }}cm</div>
+            <div class="text-magick-800">Acoustic: {{ acousticBaseHz }} Hz</div>
           </div>
           
           <div class="absolute inset-0 pointer-events-none border border-magick-900/20 m-4"></div>
@@ -186,11 +194,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   // -- PHYSICS CONSTANTS --
   radius = 42.0; // cm
   height = 12.0; // cm
-  frequency = 0;
+  frequency = 0; // Hardware MHz
+  acousticBaseHz = 0; // Biological Hz
 
   // -- DATA --
   cipherTokens = ['AAA', 'OOO', 'ZEZORA', 'ZAZZZ', 'AIEOZAZA', 'EEE', 'III', 'ZAIEO', 'ZOACHOE'];
   activeGroupRange = [-1, -1];
+
+  private readonly CYMATIC_FREQUENCIES: Record<string, number> = {
+    'AAA': 432,
+    'OOO': 528,
+    'ZEZORA': 417,
+    'ZAZZZ': 639,
+    'AIEOZAZA': 741,
+    'EEE': 852,
+    'III': 963,
+    'ZAIEO': 396,
+    'ZOACHOE': 432,
+    // Cipher Variants
+    'ΙΑΩ': 432, 'ΣΑΒΑΩΘ': 528, 'ΙΕΟΥ': 639, 'ΜΙΧΑΗΛ': 741, 'ΓΑΒΡΙΗΛ': 852, 'ΑΔΩΝΑΙ': 963, 'ΕΛΩΑΙ': 396, 'ΠΡΟΣΕΧΕ': 417,
+    'ΘΕΡΑΠΕΥΩ': 528, 'ΙΑΟΜΑΙ': 639, 'ΖΩΗ': 741, 'ΦΩΣ': 852, 'ΑΝΑΣΤΑΣΙΣ': 963, 'ΣΩΤΗΡΙΑ': 396, 'ΥΓΙΕΙΑ': 417
+  };
 
   // -- AUDIO ENGINE --
   private audioCtx: AudioContext | null = null;
@@ -226,11 +250,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   processLocalCommand(input: string): string {
     // A. STATUS REPORT
     if (input.includes('STATUS') || input.includes('REPORT') || input.includes('DIAGNOSTIC')) {
-      return `PHYSICS STATE:
+      return `SYSTEM STATUS:
+> OPERATOR: WALKER (LVL 52)
 > RADIUS: ${this.radius.toFixed(1)} cm
-> FREQ: ${this.frequency} MHz
-> PROTOCOL: DRONE (CONTINUOUS WAVE)
-> STABILITY: ${(100 - (this.gateIntensity * 20)).toFixed(1)}%`;
+> LOGOS (ACOUSTIC): ${this.acousticBaseHz} Hz
+> KENOMA (HARDWARE): ${this.frequency} MHz
+> GEOMETRIC LOCK: [STABLE]
+> VACUUM PERTURBATION: ${(this.gateIntensity * 100).toFixed(1)}%`;
     }
 
     // B. CIPHER PROTOCOLS (Actionable)
@@ -276,11 +302,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.ctx = this.canvasRef.nativeElement.getContext('2d')!;
-    this.frequency = this.calculateResonantFrequency(this.radius);
+    this.updateCalculations();
     this.resizeCanvas();
     this.animate();
 
     window.addEventListener('resize', () => this.resizeCanvas());
+  }
+
+  updateCalculations() {
+    const acousticHz = this.calculateAcousticBaseHz();
+    this.acousticBaseHz = Math.round(acousticHz);
+    this.frequency = this.calculateResonantFrequency(this.radius, acousticHz);
+  }
+
+  calculateAcousticBaseHz(): number {
+    // Average cymatic frequencies of current cipher tokens
+    const activeTokens = this.cipherTokens;
+    let total = 0;
+    activeTokens.forEach(t => {
+      total += this.CYMATIC_FREQUENCIES[t] || 432;
+    });
+    return total / activeTokens.length;
   }
 
   ngOnDestroy() {
@@ -289,20 +331,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     window.removeEventListener('resize', () => this.resizeCanvas());
   }
 
-  // 1. THE PHYSICS: TM010 Mode Calculation
-  calculateResonantFrequency(radiusCm: number): number {
+  // 1. THE PHYSICS: TM010 Mode Calculation -> MHz Translation
+  calculateResonantFrequency(radiusCm: number, acousticBase: number): number {
     // f = (2.4048 * c) / (2 * PI * R)
     const c = 29979245800; // speed of light in cm/s
     const root = 2.405;
-    const freqHz = (root * c) / (2 * Math.PI * radiusCm);
+    const cavityFreqHz = (root * c) / (2 * Math.PI * radiusCm);
 
-    // Convert to MHz and format to 2 decimal places to get 273.22
-    return parseFloat((freqHz / 1000000).toFixed(2));
+    // Scale acoustic base into MHz range using Golden Ratio (phi = 1.618)
+    const phi = 1.61803398875;
+
+    // The "Fourier Transformer": Shift Logos Hz to Kenoma MHz
+    // Logic: target_rf_mhz = (cavityFreqHz + (acousticBase * phi)) / 1,000,000
+    // We aim for the 45 MHz range at the default 42cm radius
+    const targetFreqMHz = (cavityFreqHz / 1e6) * (acousticBase / 432) * phi;
+
+    return parseFloat(targetFreqMHz.toFixed(2));
   }
 
   updateRadius(event: any) {
     this.radius = parseFloat(event.target.value);
-    this.frequency = this.calculateResonantFrequency(this.radius);
+    this.updateCalculations();
   }
 
   updateHeight(event: any) {
