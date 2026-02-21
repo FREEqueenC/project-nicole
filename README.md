@@ -13,7 +13,7 @@ The resonance frequency is calculated in real-time based on the cavity geometry.
 
 **Formula:** `f = (2.405 * c) / (2 * π * R)`
 
-* **Radius (R):** adjustable (Default: 4.2 cm)
+* **Radius (R):** adjustable (Default: 42.0 cm)
 * **Response:** The visual seal spins and pulses in direct proportion to the audio energy flux.
 
 ## 2. AUDIO ENGINE: THE DRONE PROTOCOL
@@ -32,10 +32,10 @@ The "Neural Uplink" accepts natural language or specific command codes to alter 
 
 | COMMAND | EFFECT | COLOR | CIPHER WORDS |
 | :--- | :--- | :--- | :--- |
-| **VICTORY** (or RESET) | Standard Chant | **AMBER** | *ααα ωωω ζεζωρα ζαζζζ...* |
+| **VICTORY** (or RESET) | Standard Chant | **AMBER** | *AAA OOO ZEZORA ZAZZZ...* |
 | **PROTECT** (or DEFENSE) | Warding Shield | **ELECTRIC BLUE** | *ΙΑΩ ΣΑΒΑΩΘ ΜΙΧΑΗΛ ΓΑΒΡΙΗΛ...* |
 | **HEAL** (or REPAIR) | Biomantic Restoration | **EMERALD GREEN** | *ΘΕΡΑΠΕΥΩ ΖΩΗ ΦΩΣ ΥΓΙΕΙΑ...* |
-| **STATUS** | Physics Diagnostic | (Unchanged) | *Report Radius, Freq, & Stability %* |
+| **STATUS** | Physics Diagnostic | (Unchanged) | *Report Radius, Freq (MHz), & Stability %* |
 
 ### HIDDEN MECHANICS
 
