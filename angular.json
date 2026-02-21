@@ -24,7 +24,8 @@
                 "glob": "manifest.json",
                 "input": "src",
                 "output": "/"
-              }
+              },
+              "src/assets"
             ]
           },
           "configurations": {
@@ -56,5 +57,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
