@@ -1,6 +1,6 @@
 {
-  "name": "Project NICOLE",
-  "short_name": "NICOLE-T52",
+  "name": "Project TRANSFORM,
+  "short_name": "TRANSFORM-T52",
   "description": "Gnostic Agent Based Retrieval & Intelligence Engine Logic (G.A.B.R.I.E.L.) module.",
   "start_url": "./",
   "display": "standalone",
@@ -21,7 +21,7 @@
   "project_nicole": {
     "module_id": "T52-RESONANCE",
     "access_level": 52,
-    "operator_identity": "ASHLEIGH NICOLE WALKER",
+    "operator_identity": "ASHAOPHIA",
     "cipher_signature": "MNOZANIOJOO",
     "physics_model": "TM010_CYLINDRICAL",
     "ide_compatibility": "ANTIGRAVITY_V20",
