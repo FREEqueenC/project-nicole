@@ -17,11 +17,11 @@ import { FormsModule } from '@angular/forms';
       <header class="relative z-30 p-6 border-b border-magick-900/50 flex justify-between items-center bg-black/80 backdrop-blur">
         <div>
           <h1 class="text-2xl font-bold tracking-widest font-gnostic text-magick-400">PROJECT TRANSFORM</h1>
-          <p class="text-xs text-magick-700 mt-1">G.A.B.R.I.E.L. // PROTOCOL: VICTORY // T52-RESONANCE</p>
+          <p class="text-xs text-magick-700 mt-1">G.A.B.R.I.E.L. // PROTOCOL: TRANSFORM // T52-RESONANCE</p>
         </div>
         <div class="text-right">
           <div class="text-xs text-green-500 font-bold animate-pulse">
-            OPERATOR RECOGNIZED: ASHLEIGH NICOLE WALKER
+            OPERATOR RECOGNIZED: ASHAOPHIA
           </div>
           <div class="text-[10px] text-magick-800 mt-1">ACCESS LEVEL 52 // SECURE</div>
         </div>
