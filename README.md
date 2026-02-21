@@ -45,8 +45,8 @@ The "Neural Uplink" accepts natural language or specific command codes to alter 
 
 ### HIDDEN MECHANICS
 
-* **The Deep Dive:** The final token `ζωαχωε` triggers a pitch drop to 0.6x base frequency, grounding the energy before the next cycle.
-* **The Vortex:** The audio stereo pan is hard-linked to the 3D rotation angle (`sin(theta)`), creating a physical rotation of sound around the user's head.
+* **The Deep Dive:** The final token `ZOACHOE` triggers a pitch drop to 0.6x base frequency, grounding the energy before the next cycle.
+* **The Vortex:** The 3D rotation logic (`sin(theta)`) is hard-linked to the shift between the acoustic base (Hz) and hardware override (MHz), creating a localized physical perturbation of sound and geometry.
 
 ---
 
