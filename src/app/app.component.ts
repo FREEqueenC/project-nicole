@@ -41,7 +41,7 @@ import { FormsModule } from '@angular/forms';
               <div>
                 <label class="block text-xs text-magick-600 mb-1">CAVITY RADIUS (cm)</label>
                 <input 
-                  type="range" min="1" max="20" step="0.1" 
+                  type="range" min="1" max="100" step="0.1" 
                   [value]="radius" 
                   (input)="updateRadius($event)"
                   class="w-full h-1 bg-magick-900/30 rounded-lg appearance-none cursor-pointer accent-magick-500"
@@ -66,7 +66,7 @@ import { FormsModule } from '@angular/forms';
 
               <div class="flex justify-between items-center pt-2 border-t border-magick-900/30">
                 <span class="text-xs text-magick-700">CALCULATED FREQ:</span>
-                <span class="text-lg font-mono text-magick-200">{{ frequency.toLocaleString() }} Hz</span>
+                <span class="text-lg font-mono text-magick-200">{{ frequency }} MHz</span>
               </div>
             </div>
           </div>
@@ -78,7 +78,7 @@ import { FormsModule } from '@angular/forms';
             </h2>
             
             <div class="font-gnostic text-center text-lg tracking-widest text-magick-100 mb-4 py-2 w-full break-words leading-loose">
-              ααα ωωω ζεζωρα ζαζζζ αιεωζαζα εεε ιιι ζαιεω ζωαχωε
+              AAA OOO ZEZORA ZAZZZ AIEOZAZA EEE III ZAIEO ZOACHOE
             </div>
 
             <div class="flex flex-wrap gap-2 justify-center mb-6 w-full">
@@ -184,12 +184,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
 
   // -- PHYSICS CONSTANTS --
-  radius = 4.2; // cm
+  radius = 42.0; // cm
   height = 12.0; // cm
   frequency = 0;
 
   // -- DATA --
-  cipherTokens = ['ααα', 'ωωω', 'ζεζωρα', 'ζαζζζ', 'αιεωζαζα', 'εεε', 'ιιι', 'ζαιεω', 'ζωαχωε'];
+  cipherTokens = ['AAA', 'OOO', 'ZEZORA', 'ZAZZZ', 'AIEOZAZA', 'EEE', 'III', 'ZAIEO', 'ZOACHOE'];
   activeGroupRange = [-1, -1];
 
   // -- AUDIO ENGINE --
@@ -228,7 +228,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (input.includes('STATUS') || input.includes('REPORT') || input.includes('DIAGNOSTIC')) {
       return `PHYSICS STATE:
 > RADIUS: ${this.radius.toFixed(1)} cm
-> FREQ: ${this.frequency.toLocaleString()} Hz
+> FREQ: ${this.frequency} MHz
 > PROTOCOL: DRONE (CONTINUOUS WAVE)
 > STABILITY: ${(100 - (this.gateIntensity * 20)).toFixed(1)}%`;
     }
@@ -247,7 +247,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
 
     if (input.includes('VICTORY') || input.includes('DEFAULT') || input.includes('RESET')) {
-      this.cipherTokens = ['ααα', 'ωωω', 'ζεζωρα', 'ζαζζζ', 'αιεωζαζα', 'εεε', 'ιιι', 'ζαιεω', 'ζωαχωε'];
+      this.cipherTokens = ['AAA', 'OOO', 'ZEZORA', 'ZAZZZ', 'AIEOZAZA', 'EEE', 'III', 'ZAIEO', 'ZOACHOE'];
       this.currentHue = 35; // Amber
       return 'PROTOCOL: VICTORY (STANDARD). CIPHER RESET TO JEU EVOCATION.';
     }
@@ -295,7 +295,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const c = 29979245800; // speed of light in cm/s
     const root = 2.405;
     const freqHz = (root * c) / (2 * Math.PI * radiusCm);
-    return Math.round(freqHz); // Return Hz as an integer
+
+    // Convert to MHz and format to 2 decimal places to get 273.22
+    return parseFloat((freqHz / 1000000).toFixed(2));
   }
 
   updateRadius(event: any) {
