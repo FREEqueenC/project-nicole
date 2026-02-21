@@ -427,9 +427,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
       // Connect Output
       this.analyser.connect(this.audioCtx.destination);
+      console.log('Analyser connected to destination');
 
       this.startDroneProtocol();
-      console.log('Audio protocol initiated successfully');
+      console.log('Audio protocol initiated successfully. isPlaying:', this.isPlaying);
     } catch (error) {
       console.error('Failed to initialize audio:', error);
       this.isPlaying = false;
@@ -515,7 +516,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       const timeUntilStart = (cursorTime - this.audioCtx!.currentTime) * 1000;
       if (timeUntilStart >= -100) { // If roughly now or future
         this.loopTimer = setTimeout(() => {
-          if (this.isPlaying) this.activeGroupRange = [index, index];
+          if (this.isPlaying) {
+            this.activeGroupRange = [index, index];
+            console.log(`Audio Rhythm Pulse: ${token} (index: ${index})`);
+          }
         }, timeUntilStart);
       }
 
@@ -581,9 +585,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       const avg = sum / this.dataArray.length;
       // Normalize and Boost
       this.gateIntensity = Math.min((avg / 40) * 1.5, 1);
-
     } else {
-      this.gateIntensity *= 0.95; // Decay
+      // Subtle breathing effect when idle to prove renderer is alive
+      const targetIntensity = 0.05 + Math.sin(Date.now() / 1500) * 0.03;
+      this.gateIntensity = this.gateIntensity * 0.95 + targetIntensity * 0.05;
     }
 
     // B. CLEAR
